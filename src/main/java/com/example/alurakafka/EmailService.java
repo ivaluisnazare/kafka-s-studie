@@ -32,7 +32,6 @@ public class EmailService {
                     System.out.printf("Email send with success");
                 }
                 continue;
-
             }
         }
     }

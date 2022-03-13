@@ -12,8 +12,8 @@ import java.util.concurrent.ExecutionException;
 public class NewOrderMain {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         var producer = new KafkaProducer<String,String>(properties());
-        var value = "12547, 65587, 235472587, 54778, 34231, 56765457, 22, 44, 55, 34543, 1, 4530, 333 ";
-        var email = "Dear, welcome to my ecommerce, look your product now.";
+        var value = "12547, 65587, 235472587 ";
+        var email = "Dear, welcome to my ecommerce, look your product.";
         var record = new ProducerRecord<>("ECOMMERCE_NEW_ORDER", value, value);
         var emailRecord = new ProducerRecord<>("ECOMMERCE_SAND_EMAIL", email, email);
         producer.send(record, callback()).get();
