@@ -5,8 +5,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 public class EmailService {
     public static void main(String[] args) {
         var emailService = new EmailService();
-        var service = new KafkaService(EmailService.class.getSimpleName(), "ECOMMERCE_SAND_EMAIL", emailService::toGoPass);
-        service.run();
+        try(var service = new KafkaService(EmailService.class.getSimpleName(), "ECOMMERCE_SAND_EMAIL", emailService::toGoPass)){
+        service.run();}
     }
 
     private void toGoPass(ConsumerRecord<String, String> record){

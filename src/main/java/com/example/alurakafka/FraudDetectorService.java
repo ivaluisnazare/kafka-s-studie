@@ -5,8 +5,11 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 public class FraudDetectorService {
     public static void main(String[] args) {
         var fraudDetectorService = new FraudDetectorService();
-        var service = new KafkaService(FraudDetectorService.class.getSimpleName(), "ECOMMERCE_NEW_ORDER", fraudDetectorService::toGoPass);
-        service.run();
+        try(
+            var service = new KafkaService(FraudDetectorService.class.getSimpleName(), "ECOMMERCE_NEW_ORDER", fraudDetectorService::toGoPass);
+
+        ){
+            service.run();}
     }
         private void toGoPass(ConsumerRecord<String, String> record){
 
