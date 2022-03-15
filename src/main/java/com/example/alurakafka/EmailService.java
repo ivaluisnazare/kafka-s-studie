@@ -1,11 +1,15 @@
 package com.example.alurakafka;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import java.util.HashMap;
 
 public class EmailService {
     public static void main(String[] args) {
         var emailService = new EmailService();
-        try(var service = new KafkaService(EmailService.class.getSimpleName(), "ECOMMERCE_SAND_EMAIL", emailService::toGoPass)){
+        try(var service = new KafkaService(EmailService.class.getSimpleName(),
+                "ECOMMERCE_SAND_EMAIL", emailService::toGoPass,
+                String.class,
+                new HashMap<String,String>())){
         service.run();}
     }
 

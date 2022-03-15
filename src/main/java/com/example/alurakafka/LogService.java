@@ -1,39 +1,29 @@
 package com.example.alurakafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import java.time.Duration;
-import java.util.Properties;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class LogService {
     public static void main(String[] args) {
-        var consumer = new KafkaConsumer<String, String>(properties());
-        consumer.subscribe(Pattern.compile("ECOMMERCE.*"));
-        while (true) {
-            var records = consumer.poll(Duration.ofMillis(100));
-            if (!records.isEmpty()) {
-                System.out.printf("Found" + records.count() + "Record not found");
-                for (var record : records) {
-                    System.out.printf("<-------------------------------------------------------------------------->");
-                    System.out.printf("Processing log OK |-|" + record.topic());
-                    System.out.printf(record.key());
-                    System.out.printf(record.value());
-                    System.out.printf(record.topic());
-                    System.out.printf(String.valueOf(record.offset()));
-                    System.out.printf(String.valueOf(record.partition()));
-                }
-            }
-        }
-}
+        var logService = new LogService();
 
-        private static Properties properties () {
-            var properties = new Properties();
-            properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
-            properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-            properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-            properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, LogService.class.getSimpleName());  // Optional, not influence in process.
-            return properties;
+        try (var service = new KafkaService(LogService.class.getSimpleName(),
+                Pattern.compile("ECOMMERCE.*"), logService::toGoPass,
+                String.class,
+                Map.of(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName()))) {
+            service.run();
         }
+    }
+    private void toGoPass(ConsumerRecord<String, String> record) {
+            System.out.printf("<-------------------------------------------------------------------------->");
+            System.out.printf("Processing log OK |-|" + record.topic());
+            System.out.printf(record.key());
+            System.out.printf(record.value());
+            System.out.printf(record.topic());
+            System.out.printf(String.valueOf(record.offset()));
+            System.out.printf(String.valueOf(record.partition()));
+                }
     }
